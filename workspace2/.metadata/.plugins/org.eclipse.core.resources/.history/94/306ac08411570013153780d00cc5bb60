@@ -1,0 +1,373 @@
+package com.example.NurseManager;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+import java.io.IOException;
+import java.io.Serializable;
+
+import java.util.ArrayList;
+//import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+import java.io.FileWriter;
+
+import com.example.patient_information.Patient;
+import com.example.patient_information.VitalSign;
+
+
+
+
+public class Nurse implements Serializable{
+	
+
+	
+
+	private static final long serialVersionUID = 6780135466742935201L;
+
+	
+
+	/** This is Nurse's name */ 
+	private String username;
+	
+	/** This is Nurse's password */
+	private String password;
+	
+	
+	/** This is all of the patients */
+	private Map<String, Patient> patients;
+	
+
+	
+	/** Constructs a nurse with username and password. 
+	 * @param username username of new Nurse.
+	 * @param password password of new Nurse.
+	 */
+	public Nurse(String username, String password){
+		this.username = username;
+		this.password = password;
+		this.patients = new HashMap<String, Patient>();
+
+	}
+	
+	
+	/** Constructs a nurse with username, password and manages Nurses information.
+	 * @param username username of new Nurse.
+	 * @param password password of new Nurse.
+	 * @param dir the directory in which the data file is stored.
+	 * @param fileName the data file containing Person information.
+	 * @throws IOException An instance of the type being managed by this RecordManager.
+	 */
+	public Nurse(String username, String password, File dir, String fileName) throws IOException {
+		
+		this.username = username;
+		this.password = password;
+		this.patients = new HashMap<String, Patient>();
+
+		
+		File file = new File(dir, fileName);
+		if (file.exists()){
+			this.readFromFile(file.getPath());
+		}
+		else{
+			file.createNewFile();
+		}		
+	}
+	
+	/** Returns the username of Nurse.
+	 * @return the username of Nurse.
+	 */
+	public String getName(){
+		return this.username;
+	}
+	
+	
+	/** Returns the password of Nurse.
+	 * @return the password of Nurse.
+	 */
+	public String getPassword(){
+		return this.password;
+	}
+	
+	public Map<String, ArrayList<String>> getUrgencyList() {
+		
+		ArrayList<String> urgent = new ArrayList<String>();
+		ArrayList<String> less_urgent = new ArrayList<String>();
+		ArrayList<String> non_urgent = new ArrayList<String>();
+		ArrayList<String> not_urgent = new ArrayList<String>();
+		Map<String, ArrayList<String>>  urgency_map= new HashMap<String, ArrayList<String>>();
+	    for (Patient p: patients.values()) {
+	    	if (p.getSeen_physician().equals("Haven't seen physician yet")) {
+	    		if(p.getUrgencyScore() == 0) {
+	    			not_urgent.add(p.getID());
+	    		}
+	    		if(p.getUrgencyScore() == 1) {
+	    			non_urgent.add(p.getID());
+	    		}
+	    		if(p.getUrgencyScore() == 2) {
+	    			less_urgent.add(p.getID());
+	    		}
+	    		if(p.getUrgencyScore() >= 3) {
+	    			urgent.add(p.getID());
+	    		}
+	    		urgency_map.put("Not_Urgent", not_urgent);
+	    		urgency_map.put("Non_Urgent", non_urgent);
+	    		urgency_map.put("Less_Urgent", less_urgent);
+	    		urgency_map.put("Urgent", urgent);
+	    	}
+	    }
+	    return urgency_map;
+		
+}
+	
+	public void addCheckTime(Patient patient , String time, String filePath) throws FileNotFoundException {
+		this.patients.clear();
+		this.readFromFile(filePath);
+		if(patients.get(patient.getID()) != null) {
+			patients.get(patient.getID()).setSeen_physician(time);
+		try{
+			 FileWriter writer = new FileWriter(filePath, false);
+		     for (Patient p: patients.values()){
+		    	 writer.write(p.toString() + "\n");		     
+		   }
+		    writer.close();
+			this.patients.clear();
+			this.readFromFile(filePath);
+		} catch (IOException e) {
+        e.printStackTrace();
+      }	
+	}
+	}
+	/** Adds the patient to the file.
+	 * @param patient The patient who newly arrived the ER.
+	 * @param filepath The filepath of the file stored patient information.
+	 */
+	public void add1(Patient patient, String filePath) throws FileNotFoundException{
+		this.patients.clear();
+		this.readFromFile(filePath);
+		if (patients.get(patient.getID()) == null){
+			patients.put(patient.getID(), patient);
+			try{
+				FileWriter writer = new FileWriter(filePath, true);
+				writer.write(patient.toString() + "\n");
+				writer.close();
+			}catch (IOException e){
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
+//	/** Adds the patient to the file.
+//	 * @param patient The patient who newly arrived the ER.
+//	 * @param outputStream The output stream to write the Person data to.
+//	 */
+//	public void add(Patient patient, String filePath){
+//		patients.put(patient.getID(), patient);
+//		try{
+//		 FileOutputStream outputStream = new FileOutputStream(filePath, false);
+//		 outputStream.write((patient.toString() + "\n").getBytes());
+//		 outputStream.close();
+//		}catch (IOException e) {
+//	            e.printStackTrace();
+//	   }
+//		
+//	}
+	
+	
+	
+	/** Returns a Map of patients.
+	 * @return a Map of all the patients.
+	 */
+	public Map<String, Patient> getPatients(){
+		return patients;
+	}
+	
+	
+	/** Returns true iff patients already exists.
+	 * @return true iff patients already exists.
+	 */
+	public boolean cotainsPatient(String cardnumber){
+		return patients.containsKey(cardnumber);
+	}
+		
+//	/** Records vital signs to a current exist patient. 
+//	 * @param patient The patient needed to be recorded vital signs.
+//	 * @param vitalsign The new vital sign.
+//	 * @param filePath The filepath of the data file.
+//	 * @throws FileNotFoundException
+//	 */
+	
+//	public void addVitalSign(Patient patient, VitalSign vitalsign, String filePath) throws FileNotFoundException {
+//		this.patients.clear();
+//		this.readFromFile(filePath);	
+//		if(patients.get(patient.getID()) != null){
+//			patients.get(patient.getID()).addVitalsigns(vitalsign);
+//		try{
+//			 FileWriter writer = new FileWriter(filePath, true);
+//			 FileOutputStream outputStream = new FileOutputStream(filePath, false);
+//			 for (Patient p : patients.values()) {
+//                 outputStream.write((p.toString() + "\n").getBytes());
+//			 }
+//			 outputStream.close();
+//		 }catch (IOException e) {
+//		            e.printStackTrace();
+//		     }
+//		}
+//	}
+	
+	/** Records vital signs to a current exist patient. 
+	 * @param patient The patient needed to be recorded vital signs.
+	 * @param vitalsign The new vital sign.
+	 * @param filePath The filepath of the data file.
+	 * @throws FileNotFoundException
+	 */
+	public void addVitalSign1(Patient patient, VitalSign vitalsign, String filePath) throws IOException {
+		this.patients.clear();
+		this.readFromFile(filePath);
+		if(patients.get(patient.getID()) != null) {
+			patients.get(patient.getID()).addVitalsigns(vitalsign);
+			int num = vitalsign.getUrgencyScore();
+			patients.get(patient.getID()).setUrgencyScore(num);
+		try{
+			 FileWriter writer = new FileWriter(filePath, false);
+		     for (Patient p: patients.values()){
+		    	 writer.write(p.toString() + "\n");		     
+		   }
+		    writer.close();
+			this.patients.clear();
+			this.readFromFile(filePath);
+		} catch (IOException e) {
+        e.printStackTrace();
+      }	
+	}
+}
+	
+	/** 
+	 * Returns a String representation of this Nurse.
+	 */
+	@Override
+	public String toString(){
+		return username + ","+ password;
+	}
+	
+	public Map<String, ArrayList<String>> getPatientInformation(String cardnum) {
+		ArrayList<String> patient_information = new ArrayList<String>();
+		ArrayList<String> vitalsign = new ArrayList<String>();
+		Map<String, ArrayList<String>>  patient_map = new HashMap<String, ArrayList<String>>();
+		Patient patient = patients.get(cardnum);
+		String patientinformation = "personal information: " + patient.getName() + ", " + patient.getDob() + ", " + patient.getArriveTime() 
+				+ ", " + patient.getSeen_physician() + ", " + patient.getDescription() + ", " 
+				+ "urgency score: " + patient.getUrgencyScore();
+		patient_information.add(patientinformation);
+		patient_map.put("patient_information", patient_information);
+		for (VitalSign v: patient.getVitalsigns().values()) {
+			String item = "VitalSign: " + v.toString();
+			vitalsign.add(item);
+		}
+		patient_map.put("vitalsign", vitalsign);
+		return patient_map;
+	}
+
+
+    /**
+     * Populates the list of Patients using the file at path filePath.
+     * @param filePath The filepath of the data file.
+     * @throws FileNotFoundException
+     */
+	public void readFromFile(String filePath) throws FileNotFoundException {
+        
+		Scanner scanner = new Scanner(new FileInputStream(filePath));
+		String [] record;
+
+		while(scanner.hasNextLine()) {
+			record = scanner.nextLine().split(",");
+
+			int i = record.length;
+
+			String name = record[0];
+			String[] dob = record[1].split("/");
+			String[] cardnum = record[2].split(" ");
+			String[] arrivedate = record[3].split("/");
+			String[] arrivetime = record[4].split(":");
+			
+
+			Patient patient = new Patient(name, Integer.parseInt(dob[0]), 
+					Integer.parseInt(dob[1]), Integer.parseInt(dob[2]),
+					cardnum[0], Integer.parseInt(arrivetime[0]),
+					Integer.parseInt(arrivetime[1]), Integer.parseInt(arrivedate[0]),
+					Integer.parseInt(arrivedate[1]), Integer.parseInt(arrivedate[2]));
+			
+			if(!record[5].equals("Haven't seen physician yet")){
+				patient.setSeen_physician(record[5]);
+			}
+			
+			if(!record[6].equals("No Description")){
+				patient.setDescription(record[6]);
+			}
+			
+			if(!record[7].equals("0")){
+				patient.setUrgencyScore(Integer.valueOf(record[7]).intValue());
+			}
+
+
+			patients.put(cardnum[0], patient);
+
+			/*int n = 5;
+                while (i - 5 != 0){
+                	String[] date = record[n].split("/");
+                	String[] time = record[n+1].split(":");
+                	String[] temperature = record[n+2].split(" ");
+                	String[] systolic = record[n+3].split(" ");
+                	String[] diastolic = record[n+4].split(" ");
+                	String[] heartrate = record[n+5].split(" ");
+                	VitalSign vitalsigns = new VitalSign(Double.valueOf(temperature[0]), 
+                			Integer.parseInt(systolic[0]), Integer.parseInt(diastolic[0]),
+                			Integer.parseInt(heartrate[0]), Integer.parseInt(time[0]),
+                			Integer.parseInt(time[1]), Integer.parseInt(date[0]), Integer.parseInt(date[1]),
+                			Integer.parseInt(date[2]));
+
+
+                	i = i - 6;
+                	n = n + 6;
+
+                	patient.addVitalsigns(vitalsigns);               	                	 
+                 }*/
+			/*int j = 7;
+
+                ArrayList<String> arrayRecord = new ArrayList<String>(); 
+
+                while (i - 7 != 0) {
+             	   arrayRecord.add(record[j]);
+             	   j+=1;
+                }*/
+			int n = 8;
+			while (i - 8 > 0) {
+				String[] record1 = record[n].split("-");
+				String[] date = record1[0].split("/");
+				String[] time = record1[1].split(":");
+				String[] temperature = record1[2].split(" ");
+				String[] systolic = record1[3].split(" ");
+				String[] diastolic = record1[4].split(" ");
+				String[] heartrate = record1[5].split(" ");
+				VitalSign vitalsigns = new VitalSign(Double.valueOf(temperature[0]), 
+						Integer.parseInt(systolic[0]), Integer.parseInt(diastolic[0]),
+						Integer.parseInt(heartrate[0]), Integer.parseInt(time[0]),
+						Integer.parseInt(time[1]), Integer.parseInt(date[0]), Integer.parseInt(date[1]),
+						Integer.parseInt(date[2]));
+
+
+				i = i - 1;
+				n = n + 1;
+
+				patient.addVitalsigns(vitalsigns);               	                	 
+			}
+
+
+
+		}
+		scanner.close();
+	}
+}

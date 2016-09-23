@@ -1,0 +1,35 @@
+package com.example.patient_information;
+
+public class Prescription {
+	
+	private String medication;
+	
+	private String instruction;
+	
+	public Prescription(String medication, String instruction) {
+		this.medication = medication;
+		this.instruction = instruction;
+	}
+	
+	public String getMedication() {
+		return medication;
+	}
+	
+	public void setMedication(String medication) {
+		this.medication = medication;
+	}
+	
+	public String getInstruction() {
+		return instruction;
+	}
+	
+	public void setInstruction(String instruction) {
+		this.instruction = instruction;
+	}
+	
+	@Override
+	public String toString() {
+		return medication + "," + instruction;
+	}
+
+}

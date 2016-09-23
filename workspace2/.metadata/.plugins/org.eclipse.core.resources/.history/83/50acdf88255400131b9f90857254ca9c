@@ -1,0 +1,114 @@
+package com.example.NurseManager;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+
+
+
+public class NurseManager {
+
+	
+	/** This is all of nurses. */
+	private Map<String, Nurse> nurses;
+	
+	private Map<String, Physician> physicians;
+	
+	
+    /**
+     * Constructs a new NurseManager that manages a collection of Nurse
+     * stored in directory dir in file named fileName.
+     * @param dir The directory in which the data file is stored.
+     * @param fileName The data file containing Person information.
+     * @throws IOException
+     */
+	public NurseManager(File dir, String fileName) throws IOException{
+		this.nurses = new HashMap<String, Nurse>();
+		File file = new File(dir, fileName);
+		if (file.exists()) {
+			this.readFromFile(file.getPath());
+		}
+		else{
+			file.createNewFile();
+		}
+	}
+	
+    /**
+     * Adds a nurse to this NurseManager.
+     * @param nurse A Nurse to be added.
+     */
+	public void add(Nurse nurse){
+		nurses.put(nurse.getName(), nurse);
+	}
+	
+    /**
+     * Gets the Nurse managed by this NurseManager.
+     * @return a Map of People.
+     */
+	public Map<String, Nurse> getNurses(){
+		return nurses;
+	}
+	
+	public Map<String, Physician> getPhysician(){
+		return physicians;
+	}
+	
+	@Override
+	/**
+	 * Returns a String representation of this NurseManagert.
+	 */
+	public String toString(){
+		return "NurseManager [nurses=" + nurses + "]";
+	}
+
+	
+    /**
+     * Saves the Nurse objects to file outputStream.
+     * @param outputStream The output stream to write the Person data to.
+     */
+	public void saveToFile(FileOutputStream outputStream) {
+        try {
+                // write person info one per line into outputStream
+                for (Nurse n : nurses.values()) {
+                    outputStream.write((n.toString() + "\n").getBytes());
+                }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
+	
+    /**
+     * Populates the list of People using the file at path filePath.
+     * @param filePath The filepath of the data file.
+     * @throws FileNotFoundException
+     */
+    private void readFromFile(String filePath) throws FileNotFoundException {
+        
+        Scanner scanner = new Scanner(new FileInputStream(filePath));
+        String [] record;
+        String[] usertype;
+        
+        while(scanner.hasNextLine()) {
+               record = scanner.nextLine().split(",");
+                String[] username = record[0].split(" ");
+                String[] password = record[1].split(" ");
+                usertype = record[2].split(" ");
+                if (usertype[1] == "nurse"){
+                	nurses.put(username[0], new Nurse(username[0], password[0]));
+                }else if(usertype[1] == "physician"){
+                	physicians.put(username[0], new Physician(username[0], password[0]));
+                }
+        }
+        scanner.close(); 
+    }
+    
+}

@@ -1,0 +1,94 @@
+package com.example.phase2;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.HashMap;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.View;
+import android.widget.EditText;
+
+public class ExistPatientActivity extends Activity{
+	@Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_existpatient);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.existpatient, menu);
+        return true;
+    }
+    
+    public void AddVitalSigns(View view) throws FileNotFoundException{
+    	EditText healthcardnumberText = (EditText) findViewById(R.id.healthcardnumber);
+    	String healthcardnumber = healthcardnumberText.getText().toString();
+    	EditText temperatureText = (EditText) findViewById(R.id.temperature);
+    	String temperature1 = temperatureText.getText().toString();
+    	double temperature = Double.valueOf(temperature1);
+    	
+    	EditText systolicText = (EditText) findViewById(R.id.systolic);
+    	String systolic1 = systolicText.getText().toString();
+    	int systolic = Integer.valueOf(systolic1).intValue();
+    	
+    	EditText diastolicText = (EditText) findViewById(R.id.diastolic);
+    	String diastolic1 = diastolicText.getText().toString();
+    	int diastolic = Integer.valueOf(diastolic1).intValue();
+    	
+    	EditText heartrateText = (EditText) findViewById(R.id.heartrate);
+    	String heartrate1 = heartrateText.getText().toString();
+    	int heartrate = Integer.valueOf(heartrate1).intValue();
+    	
+    	EditText dayText = (EditText) findViewById(R.id.day);
+    	String day1 = dayText.getText().toString();
+    	int day = Integer.valueOf(day1).intValue();
+    	
+    	EditText monthText = (EditText) findViewById(R.id.month);
+    	String month1 = monthText.getText().toString();
+    	int month = Integer.valueOf(month1).intValue();
+    	
+    	EditText yearText = (EditText) findViewById(R.id.year);
+    	String year1 = yearText.getText().toString();
+    	int year = Integer.valueOf(year1).intValue();
+    	
+    	EditText hourText = (EditText) findViewById(R.id.hour);
+    	String hour1 = hourText.getText().toString();
+    	int hour = Integer.valueOf(hour1).intValue();
+    	
+    	EditText minuteText = (EditText) findViewById(R.id.minute);
+    	String minute1 = minuteText.getText().toString();
+    	int minute = Integer.valueOf(minute1).intValue();
+    	
+    	Intent intent = getIntent();
+    	Nurse nurse = (Nurse) intent.getSerializableExtra("nurse");
+    	HashMap<String, Patient> patients = nurse.getPatients();
+    	Patient patient = patients.get(healthcardnumber);
+//    	VitalSign vitalsign = new VitalSign(temperature, systolic, diastolic, heartrate, hour, minute, day, month, year);
+//    	File file = new File(this.getApplicationContext().getFilesDir(),"patient.txt");
+//    	String filepath = file.toString();
+//    	nurse.addVitalSign(patient, vitalsign, filepath);
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    }
+    
+
+}
+
+
+

@@ -1,0 +1,5 @@
+package patients_information;
+
+public class Patient {
+
+}

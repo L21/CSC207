@@ -1,0 +1,7 @@
+package com.example.patient_information;
+
+public class test {
+	public static void main(String[] args){
+		VitalSign v = new VitalSign(40,150,90,40);
+	}
+}

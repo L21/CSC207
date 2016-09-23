@@ -1,0 +1,11 @@
+package com.example.patient_information;
+
+public class Prescription {
+	
+	private String medication;
+	
+	private String instruction;
+	
+	public Prescripiton
+
+}

@@ -1,0 +1,133 @@
+package com.example.phase3;
+
+import java.io.IOException;
+
+import com.example.NurseManager.Nurse;
+import com.example.NurseManager.NurseManager;
+import com.example.NurseManager.Physician;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.view.Menu;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.RadioButton;
+
+/**The login step*/
+public class MainActivity extends Activity {
+	private NurseManager nursemanager;
+
+
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+	}
+
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+
+	public void login(View view) throws IOException {
+		//use the nurse manager to read the password.txt
+		try{
+			nursemanager = new NurseManager(this.getApplicationContext().getFilesDir(),"password.txt");
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+
+		//get the input information
+		EditText usernameText = (EditText) findViewById(R.id.username);
+		String username = usernameText.getText().toString();
+
+		EditText passwordText = (EditText) findViewById(R.id.Pass_word_full);
+		String password = passwordText.getText().toString();
+
+		if (username.equals("") || password.equals("")) {
+			new AlertDialog.Builder(this)
+			.setTitle("Sorry")
+			.setMessage("invaild username or password")
+			.setPositiveButton("try again", null)
+			.show();
+		} else {
+			RadioButton click = (RadioButton) findViewById(R.id.nurse);
+
+			if (click.isChecked()) {
+				Intent intentD = new Intent(this, ChoiceActivity.class);
+
+				Nurse nurse= new Nurse(username, password, this.getApplicationContext().getFilesDir(), "patient.txt");
+
+
+				if (!(nursemanager.getNurses().containsKey(username))) {
+					new AlertDialog.Builder(this)
+					.setTitle("Sorry")
+					.setMessage("invaild username")
+					.setPositiveButton("try again", null)
+					.show();
+
+
+
+				} else {
+					//if it works, turn to next activity
+					if (nursemanager.getNurses().get(username).getPassword().equals(password)) {
+						intentD.putExtra("nurse", nurse);
+						startActivity(intentD);
+
+
+
+					} else {
+						//if it does not works,raise it
+						new AlertDialog.Builder(this)
+						.setTitle("Sorry")
+						.setMessage("invaild password")
+						.setPositiveButton("try again", null)
+						.show();
+					}
+				}
+			} else {
+
+				Intent intentP = new Intent(this, Physician_ChoiceActivity.class);
+				Physician physician= new Physician(username, password, this.getApplicationContext().getFilesDir(), "patient.txt");
+
+				if (!(nursemanager.getPhysician().containsKey(username))) {
+					new AlertDialog.Builder(this)
+					.setTitle("Sorry")
+					.setMessage("invaild username")
+					.setPositiveButton("try again", null)
+					.show();
+
+
+
+				} else {
+					//if it works, turn to next activity
+					if (nursemanager.getPhysician().get(username).getPassword().equals(password)) {
+						intentP.putExtra("physician", physician);
+						startActivity(intentP);
+
+
+
+					} else {
+						//if it does not works,raise it
+						new AlertDialog.Builder(this)
+						.setTitle("Sorry")
+						.setMessage("invaild password")
+						.setPositiveButton("try again", null)
+						.show();
+					}
+				}
+			}
+
+		}
+
+
+
+	}
+}

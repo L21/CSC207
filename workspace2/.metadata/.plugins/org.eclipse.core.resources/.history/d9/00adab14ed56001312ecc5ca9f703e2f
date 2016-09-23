@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.phase3"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="18" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.example.phase3.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.phase3.ChoiceActivity"
+            android:label="Choice Patient" >
+        </activity>
+        <activity
+            android:name="com.example.phase3.Physician_ChoiceActivity"
+            android:label="Choice Patient" >
+        </activity>
+        <activity
+            android:name="com.example.phase3.NewPatientActivity"
+            android:label="Add New Patient" >
+        </activity>
+        <activity
+            android:name="com.example.phase3.AddVitalSignActivity"
+            android:label="Add Vital Sign" >
+        </activity>
+        <activity
+            android:name="com.example.phase3.ViewPatientRecordActivity"
+            android:label="View Patient Record" >
+        </activity>
+        <activity
+            android:name="com.example.phase3.AddPrescriptionActivity"
+            android:label="Add Prescription" >
+        </activity>
+        <activity
+            android:name="com.example.phase3.UrgencyListActivity"
+            android:label="Urgency List" >
+        </activity>
+        <activity
+            android:name="com.example.phase3.CheckTimeActivity"
+            android:label="Check Time" >
+        </activity>
+    </application>
+
+</manifest>

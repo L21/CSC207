@@ -1,0 +1,27 @@
+package com.example.NurseManager;
+
+public class Physician {
+	
+	/** This is Nurse's name */ 
+	private String username;
+	
+	/** This is Nurse's password */
+	private String password;
+
+	public Physician(String username, String password) {
+		this.username = username;
+		this.password = password;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+
+	public String getPassword() {
+		return password;
+	}
+
+	
+
+}

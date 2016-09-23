@@ -1,0 +1,73 @@
+package com.example.phase2;
+
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.content.res.AssetManager;
+import android.view.Menu;
+import android.view.View;
+import android.widget.EditText;
+
+
+public class MainActivity extends Activity {
+	private String actual_username;
+	private String actual_password;
+
+
+	@Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+    
+    public void Login(View view) throws IOException {
+    	
+    	
+    	Intent intentD = new Intent(this, ChoiceActivity.class);
+    	EditText usernameText = (EditText) findViewById(R.id.editText1);
+    	String username = usernameText.getText().toString();
+    	EditText passwordText = (EditText) findViewById(R.id.editText2);
+    	String password = passwordText.getText().toString();
+    	Nurse nurse = new Nurse(username,password,this.getApplicationContext().getFilesDir(), "patient.txt");
+    	AssetManager assetManager = getAssets();
+    	InputStream inputstream = assetManager.open("Login");
+    	InputStreamReader reader = new InputStreamReader(inputstream);
+    	BufferedReader Breader = new BufferedReader(reader);
+    	try{
+    		actual_username = Breader.readLine();
+    		actual_password = Breader.readLine();
+    	}catch(IOException e){
+    		e.printStackTrace();
+    	}
+    	if ((actual_username.equals(username)) && (actual_password.equals(password))){
+    		intentD.putExtra("nurse", nurse);
+    		startActivity(intentD);
+    	}else{
+        	new AlertDialog.Builder(this)
+    		.setTitle("Sorry")
+    		.setMessage("invaild username or password")
+    		.setPositiveButton("retury", null)
+    		.show();
+    	}
+
+    }  	
+    	
+    
+}
